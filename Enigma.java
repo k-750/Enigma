@@ -7,7 +7,6 @@ public class Enigma
 	{
 		Okno okno = new Okno();
 		okno.setVisibleOkno();
-		
 	}
 
 }
