@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Szyfrowanie
 {
-	public static void zaszyfruj(Dane daneWejsciowe)
+	public void zaszyfruj(Model daneWejsciowe)
 	{
 		System.out.println("tekst: "+daneWejsciowe.getDane()+",  szyfr: "+daneWejsciowe.getSzyfr());
 		char[] daneChar = daneWejsciowe.getDane().toCharArray();		// pobiera tekst z obiektu Dane
@@ -34,7 +34,7 @@ public class Szyfrowanie
 		daneWejsciowe.setZakodowane(zaszyfrowaneString);
 	}
 	
-	public static void rozszyfruj(Dane daneWejsciowe)
+	public void rozszyfruj(Model daneWejsciowe)
 	{
 		System.out.println("zaszyfrowane dane: "+daneWejsciowe.getZakodowane()+",  szyfr: "+daneWejsciowe.getSzyfr());
 		char[] daneChar = daneWejsciowe.getZakodowane().toCharArray();		// pobiera tekst z obiektu Dane

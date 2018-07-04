@@ -1,11 +1,10 @@
 package Enigma;
 
-public class Dane
+public class Model
 {
 	private String dane;			// tekst do zaszyfrowania przeslany z obiektu Okno
 	private String zakodowane;		// tekst zaszyfrowany przeslany z obiektu Okno
 	private int szyfr;
-	
 	
 	public String getDane()
 	{

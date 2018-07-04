@@ -1,17 +1,19 @@
 package Enigma;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class Okno extends JFrame implements ActionListener
+public class View  extends JFrame implements ActionListener, Observable
 {
 	private JLabel labelDane;
 	private JTextArea textDane;
@@ -26,9 +28,10 @@ public class Okno extends JFrame implements ActionListener
 	private ButtonGroup grupa;
 	private JButton wyczysc;
 	
-	private Dane dane = new Dane();		// obiekt przechowujacy dane do zaszyfrowania, szyfr i dane zaszyfrowane
+	private Object source;
+	private ArrayList<Observer> observers = new ArrayList<Observer>();
 	
-	public Okno()
+	public View()
 	{
 		super("Enigma");
 		setSize(700,500);
@@ -102,61 +105,36 @@ public class Okno extends JFrame implements ActionListener
 			wyczysc.setLocation(480,330);
 			add(wyczysc);
 			wyczysc.addActionListener(this);
-	
+		
+		setVisible(true);
 	}
-
-	public void setVisibleOkno()		// metoda pokazujaca cale okno programu
+	
+	@Override
+	public void actionPerformed(ActionEvent e)
 	{
-		this.setVisible(true);
+		source = e.getSource();
+		notifyObserver();
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent a)
+	public void addObserver(Observer o)
 	{
-		Object source = a.getSource();
-		
-		if (source.equals(szyfruj)) 		// sprawdza, czy wcisnieto "szyfruj"
+		observers.add(o);
+	}	
+	
+	@Override
+	public void removeObserver(Observer o)
+	{
+		int index = observers.indexOf(o);
+		observers.remove(index);
+	}
+
+	@Override
+	public void notifyObserver()
+	{
+		for (Observer o : observers)
 		{
-			try
-			{
-				if (Integer.parseInt(fieldSzyfr.getText())>10 & Integer.parseInt(fieldSzyfr.getText())<100)		// sprawdza zakres Szyfru
-				{
-					dane.setSzyfr(Integer.parseInt(fieldSzyfr.getText()));		// ustawia szyfr w obiekcie dane
-			
-					try
-					{
-						if (wyborSzyfru1.isSelected())				// sprawdza, ktory JRadioButton jest zaznaczony
-						{
-							dane.setDane(textDane.getText());		// jeśli wybrano JRadioButton1 to wysyła tekst do zaszyfrowania i szyfr do obiektu dane
-							Szyfrowanie.zaszyfruj(dane);
-							textSzyfr.setText(dane.getZakodowane());
-						}
-						if (wyborSzyfru2.isSelected())
-						{
-							dane.setZakodowane(textSzyfr.getText());	// jeśli wybrano JRadioButton2 to wysyła tekst zaszyfrowany i szyfr do obiektu dane
-							Szyfrowanie.rozszyfruj(dane);
-							textDane.setText(dane.getDane());
-						}
-					} catch (Exception e)
-					{
-						JOptionPane.showMessageDialog(null, "Błędne dane");
-					}
-				}
-				else
-				{
-					JOptionPane.showMessageDialog(null, "Szyfr poza zakresem");
-				}
-			} catch (Exception e)
-			{
-				JOptionPane.showMessageDialog(null, "Niewłaściwy szyfr");
-			}
-		}
-		
-		if (source.equals(wyczysc))				// sprawdza czy wcisnieto wyczysc
-		{
-			textDane.setText("");
-			textSzyfr.setText("");
-			fieldSzyfr.setText("");
-		}
+			o.update(source,textDane,textSzyfr,wyborSzyfru1,wyborSzyfru2,fieldSzyfr,szyfruj,wyczysc);
+		}	
 	}
 }
